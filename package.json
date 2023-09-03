@@ -1,7 +1,7 @@
 {
 	"name": "modscraper-cli",
 	"version": "1.0.0",
-	"description": "",
+	"description": "Simple CLI tool to download GTA V mods via modscraper-web (msw.boris.foo)",
 	"main": "index.js",
 	"type": "module",
 	"bin": {
@@ -10,7 +10,9 @@
 	"scripts": {
 		"dev": "nodemon ."
 	},
-	"keywords": [],
+	"keywords": [
+		"cli"
+	],
 	"author": "",
 	"license": "ISC",
 	"dependencies": {
