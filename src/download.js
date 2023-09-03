@@ -12,7 +12,6 @@ const getDownloadLink = {
 		});
 		const page = await browser.newPage();
 		await page.goto(url);
-		await page.waitForNavigation();
 
 		await page.evaluate(() => {
 			const element = document.querySelector("[data-name=mediavine-gdpr-cmp]");
