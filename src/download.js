@@ -3,6 +3,7 @@ import path from "path";
 import { fetchData } from "./fetch.js";
 import { log } from "./logger.js";
 import chalk from "chalk";
+import open from "open";
 
 const getDownloadLink = {
 	"gta5-mods.com": async (url) => {
@@ -10,7 +11,6 @@ const getDownloadLink = {
 			headless: "new",
 		});
 		const page = await browser.newPage();
-
 		await page.goto(url);
 
 		await page.evaluate(() => {
@@ -23,6 +23,25 @@ const getDownloadLink = {
 		await page.waitForNavigation();
 
 		const download = await page.$("a.btn-download");
+		const link = await download.evaluate((el) => el.getAttribute("href"));
+		await browser.close();
+
+		return link;
+	},
+	"libertycity.net": async (url) => {
+		open(url, { wait: false });
+		return false;
+	},
+	"gta5mod.net": async (url) => {
+		const browser = await puppeteer.launch({
+			headless: "new",
+		});
+		const page = await browser.newPage();
+		await page.goto(url);
+		await page.waitForNavigation();
+
+		const download = await page.$("a.attachment-link");
+
 		const link = await download.evaluate((el) => el.getAttribute("href"));
 		await browser.close();
 
@@ -43,8 +62,19 @@ export async function downloadMod(url) {
 	log("Finding download link..");
 	const downloadUrl = await getDownloadLink[new URL(link).hostname](link);
 
-	log("Downloading mod archive..");
-	const arrayBuffer = await (await fetchData(downloadUrl)).arrayBuffer();
+	if (!downloadUrl) {
+		log(
+			"Couldn't find download link, opening page in browser for manual download."
+		);
+		return false;
+	}
 
-	return [Buffer.from(arrayBuffer), path.extname(downloadUrl)];
+	log("Downloading mod archive..");
+	const response = await fetchData(downloadUrl);
+	const arrayBuffer = await response.arrayBuffer();
+
+	return {
+		buffer: Buffer.from(arrayBuffer),
+		ext: path.extname(response.url),
+	};
 }

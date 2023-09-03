@@ -7,10 +7,13 @@ import { log } from "./src/logger.js";
 import chalk from "chalk";
 import { program } from "commander";
 
-async function handleAction(url) {
+async function handleAction(downloadUrl) {
 	const options = program.opts();
 
-	const [buffer, ext] = await downloadMod(url);
+	const ret = await downloadMod(downloadUrl);
+	if (!ret) return;
+
+	const { buffer, ext } = ret;
 	const archivePath = path.join(
 		process.cwd(),
 		(options.output ? options.output : "msw-download") + ext
