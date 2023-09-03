@@ -11,5 +11,5 @@ npm i -g modscraper-cli
 ### Usage
 
 ```
-msw <url>
+msw <url or id>
 ```

@@ -26,7 +26,7 @@ async function handleAction(downloadUrl) {
 
 program
 	.name("msw")
-	.arguments("<url>", "msw share link to the mod")
+	.arguments("<url>", "msw share link or id of the mod")
 	.option("-o, --output <name>", "the name of the output archive")
 	.action(handleAction)
 	.parse(process.argv);
