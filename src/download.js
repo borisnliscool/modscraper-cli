@@ -65,7 +65,10 @@ const getDownloadLink = {
  * @param {string} url
  */
 export async function downloadMod(url) {
+	if (!url.startsWith("https://msw.boris.foo/mod/"))
+		url = "https://msw.boris.foo/mod/" + url;
 	if (!url.endsWith("/raw")) url += "/raw";
+
 	const modData = await (await fetch(url)).json();
 	log(`Attempting to download "${chalk.blue(modData.title)}"`);
 
