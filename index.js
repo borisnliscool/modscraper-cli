@@ -7,12 +7,23 @@ import chalk from "chalk";
 const url = process.argv[2];
 
 if (!url) {
-	console.error("Please provide a URL as a command-line argument.");
+	log(
+		chalk.red(
+			"Please provide a Modscraper-web share link as a command-line argument."
+		)
+	);
+	log(
+		chalk.red(
+			`You can get one by clicking 'Copy share link' on any mod on ${chalk.underline(
+				"https://msw.boris.foo/search"
+			)}`
+		)
+	);
 	process.exit(1);
 }
 
 const [buffer, ext] = await downloadMod(url);
-const archivePath = path.join(process.cwd(), "archive" + ext);
+const archivePath = path.join(process.cwd(), "msw-download" + ext);
 
 log("Writing archive..");
 fs.writeFileSync(archivePath, buffer);
