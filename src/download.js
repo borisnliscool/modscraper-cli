@@ -12,6 +12,7 @@ const getDownloadLink = {
 		});
 		const page = await browser.newPage();
 		await page.goto(url);
+		await page.waitForNavigation();
 
 		await page.evaluate(() => {
 			const element = document.querySelector("[data-name=mediavine-gdpr-cmp]");
@@ -41,7 +42,19 @@ const getDownloadLink = {
 		await page.waitForNavigation();
 
 		const download = await page.$("a.attachment-link");
+		const link = await download.evaluate((el) => el.getAttribute("href"));
+		await browser.close();
 
+		return link;
+	},
+	"gtainside.com": async (url) => {
+		const browser = await puppeteer.launch({
+			headless: false,
+		});
+		const page = await browser.newPage();
+		await page.goto(url + "/download");
+
+		const download = await page.$("a.break-word");
 		const link = await download.evaluate((el) => el.getAttribute("href"));
 		await browser.close();
 
