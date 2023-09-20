@@ -62,17 +62,29 @@ const getDownloadLink = {
 };
 
 /**
- * @param {string} url
+ * @param {string} _url
  */
-export async function downloadMod(url) {
-	if (!url.startsWith("https://msw.boris.foo/mod/"))
-		url = "https://msw.boris.foo/mod/" + url;
-	if (!url.endsWith("/raw")) url += "/raw";
+export async function downloadMod(_url) {
+	const url = new URL(_url);
+	let link = "";
 
-	const modData = await (await fetch(url)).json();
-	log(`Attempting to download "${chalk.blue(modData.title)}"`);
+	if (url.hostname == "msw.boris.foo") {
+		if (!_url.startsWith("https://msw.boris.foo/mod/")) {
+			_url = "https://msw.boris.foo/mod/" + _url;
+		}
+		if (!_url.endsWith("/raw")) {
+			_url += "/raw";
+		}
 
-	const link = modData.link instanceof Array ? modData.link[0] : modData.link;
+		const modData = await (await fetch(_url)).json();
+		log(`Attempting to download "${chalk.blue(modData.title)}"`);
+
+		link = modData.link instanceof Array ? modData.link[0] : modData.link;
+	} else if (getDownloadLink[url.hostname.replace("www.", "")]) {
+		link = _url.replace("www.", "");
+	} else {
+		return false;
+	}
 
 	log("Finding download link..");
 	const downloadUrl = await getDownloadLink[new URL(link).hostname](link);

@@ -11,7 +11,13 @@ async function handleAction(downloadUrl) {
 	const options = program.opts();
 
 	const ret = await downloadMod(downloadUrl);
-	if (!ret) return;
+	if (!ret) {
+		return log(
+			chalk.red(
+				"Something went wrong while attempting to download mod. (is the url correct?)"
+			)
+		);
+	}
 
 	const { buffer, ext } = ret;
 	const archivePath = path.join(
